@@ -57,10 +57,10 @@ class RequestType extends JsonType
 
         try {
             $request = $factory->createRequest($valueArray[static::METHOD], $factory->createUri($valueArray[static::URI]));
-            foreach ($valueArray[static::HEADERS] as $name => $valueArray) {
-                $request = $request->withHeader($name, $valueArray);
-            }
             $request = $request->withProtocolVersion($valueArray[static::PROTOCOL_VERSION]);
+            foreach ($valueArray[static::HEADERS] as $name => $header) {
+                $request = $request->withHeader($name, $header);
+            }
             $request->withBody($factory->createStream($valueArray[static::BODY]));
         } catch (Throwable $e) {
             throw ConversionException::conversionFailedFormat($value, static::NAME, json_encode([

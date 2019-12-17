@@ -16,7 +16,6 @@ class ResponseType extends JsonType
     public const NAME = 'response';
 
     protected const STATUS_CODE = 'status_code';
-    protected const REASON_PHRASE = 'reason_phrase';
     protected const PROTOCOL_VERSION = 'protocol_version';
     protected const HEADERS = 'headers';
     protected const BODY = 'body';
@@ -34,8 +33,7 @@ class ResponseType extends JsonType
 
         if ($value instanceof ResponseInterface) {
             $array = [
-                static::STATUS_CODE, $value->getStatusCode(),
-                static::REASON_PHRASE => $value->getReasonPhrase(),
+                static::STATUS_CODE => $value->getStatusCode(),
                 static::PROTOCOL_VERSION => $value->getProtocolVersion(),
                 static::HEADERS => $value->getHeaders(),
                 static::BODY => $value->getBody()->__toString(),
@@ -56,17 +54,15 @@ class ResponseType extends JsonType
         $factory = new Psr17Factory();
 
         try {
-            $response = $factory->createResponse($valueArray[static::STATUS_CODE], $valueArray[static::REASON_PHRASE]);
-            $response = $response->withBody($factory->createStream($valueArray[static::BODY]));
+            $response = $factory->createResponse($valueArray[static::STATUS_CODE]);
             $response = $response->withProtocolVersion($valueArray[static::PROTOCOL_VERSION]);
-            $headers = $valueArray[static::HEADERS];
-            foreach ($headers as $name => $valueArray) {
-                $response = $response->withHeader($name, $valueArray);
+            foreach ($valueArray[static::HEADERS] as $name => $header) {
+                $response = $response->withHeader($name, $header);
             }
+            $response = $response->withBody($factory->createStream($valueArray[static::BODY]));
         } catch (Throwable $e) {
             throw ConversionException::conversionFailedFormat($value, static::NAME, json_encode([
                 static::STATUS_CODE => '',
-                static::REASON_PHRASE => '',
                 static::PROTOCOL_VERSION => '',
                 static::HEADERS => '',
                 static::BODY => '',
