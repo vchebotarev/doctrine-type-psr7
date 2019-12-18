@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Chebur\DoctrineTypePsr7;
 
+use Chebur\DoctrinePostgreSQLTypeJson\JsonType;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
-use Doctrine\DBAL\Types\JsonType;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Message\RequestInterface;
 use Throwable;
